@@ -8,13 +8,13 @@ using StackExchange.Redis;
 
 namespace LBoard.Services
 {
-    public class RedisService
+    public class RedisService : ILeaderboardService
     {
         private ConnectionMultiplexer _redis;
+        private IDatabase _db => _redis.GetDatabase(RedisConfig.Database);
+
         private ILogger _logger;
 
-        private IDatabase _db => _redis.GetDatabase(RedisConfig.Database);
-        
         public RedisService(ILogger<RedisService> logger)
         {
             _logger = logger;
@@ -23,25 +23,24 @@ namespace LBoard.Services
             _redis = ConnectionMultiplexer.Connect($"{RedisConfig.Address}:{RedisConfig.Port}");
             _logger.LogInformation($"Connected to Redis.");
         }
-        
-        public async Task<bool> AddToLeaderboardAsync(LeaderboardPostRequest req)
+
+        public async Task<bool> AddToLeaderboardAsync(LeaderboardEntry entry, double score)
         {
-            if (!RedisConfig.AllowMultiple)
+            if (await RemoveAsync(entry))
             {
-                if (await RemoveAsync(req.Entry))
-                {
-                    _logger.LogInformation($"{req.Entry} removed.");
-                }
-                else
-                {
-                    _logger.LogInformation($"{req.Entry} does not exist.");
-                }
+                _logger.LogInformation($"{entry} removed.");
+            }
+            else
+            {
+                _logger.LogInformation($"{entry} does not exist.");
             }
 
-            _logger.LogInformation($"Adding {req.Entry} to leaderboard.");
+
+            _logger.LogInformation($"Adding {entry} to leaderboard.");
             var db = _db;
-            return await db.SortedSetAddAsync(RedisConfig.BoardKey, JsonConvert.SerializeObject(req.Entry), req.Score);
+            return await db.SortedSetAddAsync(RedisConfig.BoardKey, JsonConvert.SerializeObject(entry), score);
         }
+
         public async Task<IEnumerable<LeaderboardEntry>> GetLeaderboardAsync(int? max = null)
         {
             _logger.LogInformation($"Asked for leaderboard.");
@@ -50,6 +49,7 @@ namespace LBoard.Services
             var stringEntries = entries.ToStringArray();
             return stringEntries.Select(x => JsonConvert.DeserializeObject<LeaderboardEntry>(x)).ToList();
         }
+
         private async Task<bool> RemoveAsync(LeaderboardEntry entry)
         {
             _logger.LogInformation($"Check if {entry} already exists in the leaderboard.");

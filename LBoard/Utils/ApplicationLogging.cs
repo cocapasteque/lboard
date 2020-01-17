@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Pastel;
 
-namespace Str8labs.Utils
+namespace Utils
 {
     public static class ApplicationLogging
     {

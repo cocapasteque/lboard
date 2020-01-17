@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Str8labs.Utils;
+using Utils;
 
 namespace LBoard
 {
@@ -21,7 +21,7 @@ namespace LBoard
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<RedisService>();
+            services.AddSingleton<ILeaderboardService, RedisService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,9 +9,9 @@ namespace LBoard.Controllers
     [ApiController]
     public class LeaderboardController : ControllerBase
     {
-        private readonly RedisService _redis;
+        private readonly ILeaderboardService _redis;
         
-        public LeaderboardController(RedisService redis)
+        public LeaderboardController(ILeaderboardService redis)
         {
             _redis = redis;
         }
@@ -26,7 +26,7 @@ namespace LBoard.Controllers
         [HttpPost]
         public async Task<ActionResult> PostEntry([FromBody] LeaderboardPostRequest req)
         {
-            var ok = await _redis.AddToLeaderboardAsync(req);
+            var ok = await _redis.AddToLeaderboardAsync(req.Entry, req.Score);
             if (ok) return Ok(req);
             return StatusCode(500);
         }
