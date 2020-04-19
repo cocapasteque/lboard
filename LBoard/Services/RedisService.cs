@@ -24,37 +24,37 @@ namespace LBoard.Services
             _logger.LogInformation($"Connected to Redis.");
         }
 
-        public async Task<bool> AddToLeaderboardAsync(LeaderboardEntry entry, double score)
+        public async Task<bool> AddToLeaderboardAsync(string board, LeaderboardEntry entry, double score)
         {
-            if (await RemoveAsync(entry))
+            if (await RemoveAsync(board, entry))
             {
-                _logger.LogInformation($"{entry} removed.");
+                _logger.LogInformation($"{entry} removed in {board}.");
             }
             else
             {
-                _logger.LogInformation($"{entry} does not exist.");
+                _logger.LogInformation($"{entry} does not exist in {board}.");
             }
 
 
-            _logger.LogInformation($"Adding {entry} to leaderboard.");
+            _logger.LogInformation($"Adding {entry} to leaderboard {board}.");
             var db = _db;
-            return await db.SortedSetAddAsync(RedisConfig.BoardKey, JsonConvert.SerializeObject(entry), score);
+            return await db.SortedSetAddAsync(board, JsonConvert.SerializeObject(entry), score);
         }
 
-        public async Task<IEnumerable<LeaderboardEntry>> GetLeaderboardAsync(int? max = null)
+        public async Task<IEnumerable<LeaderboardEntry>> GetLeaderboardAsync(string board, int? max = null)
         {
-            _logger.LogInformation($"Asked for leaderboard.");
+            _logger.LogInformation($"Asked for leaderboard {board}.");
             var db = _db;
-            var entries = await db.SortedSetRangeByRankAsync(RedisConfig.BoardKey, 0, max ?? -1L, Order.Descending);
+            var entries = await db.SortedSetRangeByRankAsync(board, 0, max ?? -1L, Order.Descending);
             var stringEntries = entries.ToStringArray();
             return stringEntries.Select(x => JsonConvert.DeserializeObject<LeaderboardEntry>(x)).ToList();
         }
 
-        private async Task<bool> RemoveAsync(LeaderboardEntry entry)
+        private async Task<bool> RemoveAsync(string board, LeaderboardEntry entry)
         {
-            _logger.LogInformation($"Check if {entry} already exists in the leaderboard.");
+            _logger.LogInformation($"Check if {entry} already exists in the leaderboard {board}.");
             var db = _db;
-            return await db.SortedSetRemoveAsync(RedisConfig.BoardKey, JsonConvert.SerializeObject(entry));
+            return await db.SortedSetRemoveAsync(board, JsonConvert.SerializeObject(entry));
         }
     }
 }

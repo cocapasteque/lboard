@@ -16,23 +16,23 @@ namespace LBoard.Controllers
             _redis = redis;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetLeaderboard()
+        [HttpGet("{board}")]
+        public async Task<ActionResult> GetLeaderboard(string board)
         {
-            var entries = await _redis.GetLeaderboardAsync();
+            var entries = await _redis.GetLeaderboardAsync(board);
             return Ok(entries);
         }
         
-        [HttpPost]
-        public async Task<ActionResult> PostEntry([FromBody] LeaderboardPostRequest req)
+        [HttpPost("{board}")]
+        public async Task<ActionResult> PostEntry([FromBody] LeaderboardPostRequest req, string board)
         {
-            var ok = await _redis.AddToLeaderboardAsync(req.Entry, req.Score);
+            var ok = await _redis.AddToLeaderboardAsync(board, req.Entry, req.Score);
             if (ok) return Ok(req);
             return StatusCode(500);
         }
 
-        [HttpDelete("{key}")]
-        public async Task<ActionResult> RemoveEntry(string key)
+        [HttpDelete("{board}/{key}")]
+        public async Task<ActionResult> RemoveEntry(string key, string board)
         {
             return StatusCode(500);
         }
