@@ -20,7 +20,7 @@ namespace LBoard.Services
             _logger = logger;
 
             _logger.LogInformation($"Creating Redis connection on {RedisConfig.Address}:{RedisConfig.Port}");
-            _redis = ConnectionMultiplexer.Connect($"{RedisConfig.Address}:{RedisConfig.Port}");
+            _redis = ConnectionMultiplexer.Connect($"{RedisConfig.Address}:{RedisConfig.Port},password={RedisConfig.Password}");
             _logger.LogInformation($"Connected to Redis.");
         }
 
