@@ -8,5 +8,6 @@ namespace LBoard.Services
     {
         Task<bool> AddToLeaderboardAsync(string board, LeaderboardEntry entry, double score);
         Task<IEnumerable<LeaderboardEntry>> GetLeaderboardAsync(string board, int? max = null);
+        Task RemoveFromLeaderboardAsync(string board, string key);
     }
 }

@@ -56,5 +56,21 @@ namespace LBoard.Services
             var db = _db;
             return await db.SortedSetRemoveAsync(board, JsonConvert.SerializeObject(entry));
         }
+
+        public async Task RemoveFromLeaderboardAsync(string board, string key)
+        {
+            _logger.LogInformation($"Removing all entries for {key} in {board}");
+            var db = _db;
+            var entries = await GetLeaderboardAsync(board);
+            var toDelete = entries.Where(x => x.Key == key).Select(JsonConvert.SerializeObject);
+            _logger.LogInformation($"Found {toDelete.Count()} entries to delete");
+
+            foreach (var item in toDelete)
+            {
+                db.SortedSetRemoveAsync(board, item);
+            }
+            
+            _logger.LogInformation("deleted");
+        }
     }
 }

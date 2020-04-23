@@ -34,7 +34,8 @@ namespace LBoard.Controllers
         [HttpDelete("{board}/{key}")]
         public async Task<ActionResult> RemoveEntry(string key, string board)
         {
-            return StatusCode(500);
+            await _redis.RemoveFromLeaderboardAsync(board, key);
+            return StatusCode(200);
         }
     }
 }
