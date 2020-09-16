@@ -49,8 +49,8 @@ namespace Utils
             
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
-                Color foreground;
-                Color background;
+                var foreground = Color.Black;
+                var background = Color.White;
                 if (!IsEnabled(logLevel))
                 {
                     return;

@@ -7,7 +7,6 @@ namespace LBoard.Models
         public static string Address => Environment.GetEnvironmentVariable("REDIS_ADDRESS") ?? "localhost";
         public static string Port => Environment.GetEnvironmentVariable("REDIS_PORT") ?? "6379";
         public static string Password => Environment.GetEnvironmentVariable("REDIS_PASSWORD");
-        public static string BoardKey => Environment.GetEnvironmentVariable("REDIS_BKEY") ?? "lboard";
         public static int Database => 
             int.TryParse(Environment.GetEnvironmentVariable("REDIS_DB"), out int db) ? db : 0;
     }

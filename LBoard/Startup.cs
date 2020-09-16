@@ -1,7 +1,11 @@
-﻿using LBoard.Services;
+﻿using System;
+using LBoard.Context;
+using LBoard.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Utils;
@@ -26,7 +30,9 @@ namespace LBoard
                     .AllowAnyHeader();
             }));
 
-            
+            services.AddDbContext<LboardDbContext>(options => options.UseMySql(""));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSingleton<ILeaderboardService, RedisService>();
         }
@@ -45,7 +51,14 @@ namespace LBoard
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            //app.UseApiKey();
+            
             app.UseMvc();
         }
+
+
     }
 }
