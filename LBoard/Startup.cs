@@ -1,5 +1,6 @@
 ﻿using System;
 using LBoard.Context;
+using LBoard.Models;
 using LBoard.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,9 +15,12 @@ namespace LBoard
 {
     public class Startup
     {
+        private ILogger _logger;
+
         public Startup(ILoggerFactory logFactory)
         {
             ApplicationLogging.LoggerFactory = logFactory;
+            _logger = logFactory.CreateLogger<Startup>();
         }
 
 
@@ -30,7 +34,8 @@ namespace LBoard
                     .AllowAnyHeader();
             }));
 
-            services.AddDbContext<LboardDbContext>(options => options.UseMySql(""));
+            services.AddDbContext<LboardDbContext>(options => 
+                options.UseMySql($"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}"));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -57,6 +62,11 @@ namespace LBoard
             //app.UseApiKey();
             
             app.UseMvc();
+
+            _logger.LogInformation("Starting database migration...");
+            using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            scope.ServiceProvider.GetService<LboardDbContext>().Database.Migrate();
+            _logger.LogInformation("Migration done.");
         }
 
 
