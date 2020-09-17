@@ -61,8 +61,6 @@ namespace LBoard
             app.UseAuthorization();
             //app.UseApiKey();
             
-            app.UseMvc();
-
             _logger.LogInformation("Starting database migration...");
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             scope.ServiceProvider.GetService<LboardDbContext>().Database.Migrate();
