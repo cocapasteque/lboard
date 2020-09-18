@@ -34,12 +34,13 @@ namespace LBoard
                     .AllowAnyHeader();
             }));
 
-            services.AddDbContext<LboardDbContext>(options => 
-                options.UseMySql($"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}"));
+            services.AddDbContext<LboardDbContext>(options =>
+                options.UseMySql(
+                    $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}"));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSingleton<ILeaderboardService, RedisService>();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,13 +61,14 @@ namespace LBoard
             app.UseAuthentication();
             app.UseAuthorization();
             //app.UseApiKey();
-            
+
+            app.UseRouting();
+            app.UseEndpoints(e => { e.MapControllers(); });
+
             _logger.LogInformation("Starting database migration...");
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             scope.ServiceProvider.GetService<LboardDbContext>().Database.Migrate();
             _logger.LogInformation("Migration done.");
         }
-
-
     }
 }
