@@ -1,9 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using LBoard.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LBoard.Controllers
 {
@@ -41,6 +46,53 @@ namespace LBoard.Controllers
             }
 
             return Ok(new {Message = "User Registration Successful"});
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] Auth.LoginRequest request)
+        {
+            IdentityUser identityUser;
+
+            if (!ModelState.IsValid || request == null || (identityUser = await ValidateUser(request)) == null)
+            {
+                return new BadRequestObjectResult(new {Message = "Login failed"});
+            }
+
+            var token = GenerateToken(identityUser);
+            return Ok(new {Token = token, Message = "Success"});
+        }
+
+        private async Task<IdentityUser> ValidateUser(Auth.LoginRequest credentials)
+        {
+            var identityUser = await userManager.FindByNameAsync(credentials.Username);
+            if (identityUser == null) return null;
+
+            var result = userManager.PasswordHasher.VerifyHashedPassword(identityUser, identityUser.PasswordHash,
+                credentials.Password);
+            return result == PasswordVerificationResult.Failed ? null : identityUser;
+        }
+
+        private object GenerateToken(IdentityUser user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(ApiConfig.JwtSecretKey);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                }),
+                Expires = DateTime.UtcNow.AddSeconds(double.Parse(ApiConfig.JwtExp)), //TODO: Try parse
+                SigningCredentials =
+                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Audience = ApiConfig.JwtAudience,
+                Issuer = ApiConfig.JwtIssuer
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }
