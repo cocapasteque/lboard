@@ -99,7 +99,7 @@ namespace Utils
                 if (!Enum.TryParse(_config.GetSection("LogLevel").GetSection("System").Value,
                     out LogLevel configLevel)) return false;
                 
-                if (configLevel == LogLevel.Trace) return true;
+                if (configLevel == LogLevel.Trace || _traceEnabled) return true;
                 if (configLevel == LogLevel.None) return false;
                 return logLevel >= configLevel && logLevel < LogLevel.None;
             }
