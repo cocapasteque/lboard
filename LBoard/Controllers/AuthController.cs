@@ -71,10 +71,14 @@ namespace LBoard.Controllers
                 return new BadRequestObjectResult(new {Message = "Login failed"});
             }
 
-            var token = GenerateToken(identityUser);
+            //var token = GenerateToken(identityUser);
+            _logger.LogInformation("New token generation");
+            await _userManager.RemoveAuthenticationTokenAsync(identityUser, "lboard", "login");
+            var newToken = await _userManager.GenerateUserTokenAsync(identityUser, "lboard", "login");
+            await _userManager.SetAuthenticationTokenAsync(identityUser, "lboard", "login", newToken);
             
             _logger.LogInformation($"Login successful for {request.Username}");
-            return Ok(new {Token = token, Message = "Success"});
+            return Ok(new {Token = newToken, Message = "Success"});
         }
 
         private async Task<IdentityUser> ValidateUser(Auth.LoginRequest credentials)
@@ -90,7 +94,7 @@ namespace LBoard.Controllers
         private object GenerateToken(IdentityUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(ApiConfig.JwtSecretKey);
+            var key = Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -106,6 +110,7 @@ namespace LBoard.Controllers
                 Issuer = ApiConfig.JwtIssuer
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            
             return tokenHandler.WriteToken(token);
         }
     }

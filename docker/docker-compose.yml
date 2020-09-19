@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  lboard:
+    container_name: lboard
+    image: lboard:latest
+    depends_on:
+      - "redis_image"
+      - "db"
+    ports:
+      - "8001:80"
+    environment:
+      REDIS_ADDRESS: ${REDIS_ADDRESS}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_BKEY: "lboard"
+      REDIS_DB: 0
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TRACE_OUTPUT: ${TRACE_OUTPUT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRY: ${JWT_EXPIRY}
+  
+  redis_image:
+    container_name: redis_cache
+    image: bitnami/redis:latest
+    ports:
+        - "6379:6379"
+    environment:
+        - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+        - /root/volume/lboard:/bitnami/redis/data
+
+  db:
+    container_name: db
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  pma:
+    container_name: phpmyadmin
+    restart: unless-stopped
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_HOST: db
+
+volumes:
+  db:

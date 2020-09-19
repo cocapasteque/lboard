@@ -37,7 +37,8 @@ namespace LBoard
             services.AddDbContext<LboardDbContext>(options =>
                 options.UseMySql(
                     $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}"));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>()
+                .AddTokenProvider("lboard", typeof(DataProtectorTokenProvider<IdentityUser>));
 
             services.AddSingleton<ILeaderboardService, RedisService>();
             services.AddControllers();
