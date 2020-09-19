@@ -1,12 +1,14 @@
 ﻿using System.Threading.Tasks;
 using LBoard.Models;
 using LBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LBoard.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LeaderboardController : ControllerBase
     {
         private readonly ILeaderboardService _redis;

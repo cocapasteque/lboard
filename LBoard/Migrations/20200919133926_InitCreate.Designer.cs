@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LBoard.Migrations
 {
     [DbContext(typeof(LboardDbContext))]
-    [Migration("20200917203117_InitCreate")]
+    [Migration("20200919133926_InitCreate")]
     partial class InitCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -71,12 +71,8 @@ namespace LBoard.Controllers
                 return new BadRequestObjectResult(new {Message = "Login failed"});
             }
 
-            //var token = GenerateToken(identityUser);
-            _logger.LogInformation("New token generation");
-            await _userManager.RemoveAuthenticationTokenAsync(identityUser, "lboard", "login");
-            var newToken = await _userManager.GenerateUserTokenAsync(identityUser, "lboard", "login");
-            await _userManager.SetAuthenticationTokenAsync(identityUser, "lboard", "login", newToken);
-            
+            var newToken = GenerateToken(identityUser);
+
             _logger.LogInformation($"Login successful for {request.Username}");
             return Ok(new {Token = newToken, Message = "Success"});
         }

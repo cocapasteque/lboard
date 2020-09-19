@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text;
 using LBoard.Context;
 using LBoard.Models;
 using LBoard.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Utils;
 
 namespace LBoard
@@ -35,10 +38,31 @@ namespace LBoard
             }));
 
             services.AddDbContext<LboardDbContext>(options =>
+            {
                 options.UseMySql(
-                    $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}"));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>()
-                .AddTokenProvider("lboard", typeof(DataProtectorTokenProvider<IdentityUser>));
+                    $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
+                    x => x.MigrationsAssembly("LBoard"));
+            });
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = false;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = ApiConfig.JwtIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = ApiConfig.JwtAudience
+                };
+            });
 
             services.AddSingleton<ILeaderboardService, RedisService>();
             services.AddControllers();
@@ -60,10 +84,9 @@ namespace LBoard
             }
 
             app.UseAuthentication();
-            app.UseAuthorization();
-            //app.UseApiKey();
-
             app.UseRouting();
+            app.UseAuthorization();
+
             app.UseEndpoints(e => { e.MapControllers(); });
 
             _logger.LogInformation("Starting database migration...");

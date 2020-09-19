@@ -32,7 +32,7 @@ services:
     environment:
         - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
-        - /root/volume/lboard:/bitnami/redis/data
+        - redis:/bitnami/redis/data
 
   db:
     container_name: db
@@ -58,3 +58,4 @@ services:
 
 volumes:
   db:
+  redis:
