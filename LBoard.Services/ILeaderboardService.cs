@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using LBoard.Models;
+using LBoard.Models.Leaderboard;
 
 namespace LBoard.Services
 {

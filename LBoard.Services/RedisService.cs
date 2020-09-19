@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LBoard.Models;
+using LBoard.Models.Config;
+using LBoard.Models.Leaderboard;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -10,10 +12,10 @@ namespace LBoard.Services
 {
     public class RedisService : ILeaderboardService
     {
-        private ConnectionMultiplexer _redis;
+        private readonly ConnectionMultiplexer _redis;
         private IDatabase _db => _redis.GetDatabase(RedisConfig.Database);
 
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public RedisService(ILogger<RedisService> logger)
         {
@@ -47,7 +49,7 @@ namespace LBoard.Services
             var db = _db;
             var entries = await db.SortedSetRangeByRankAsync(board, 0, max ?? -1L, Order.Descending);
             var stringEntries = entries.ToStringArray();
-            return stringEntries.Select(x => JsonConvert.DeserializeObject<LeaderboardEntry>(x)).ToList();
+            return stringEntries.Select(JsonConvert.DeserializeObject<LeaderboardEntry>).ToList();
         }
 
         private async Task<bool> RemoveAsync(string board, LeaderboardEntry entry)

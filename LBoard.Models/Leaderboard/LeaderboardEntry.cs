@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace LBoard.Models
+namespace LBoard.Models.Leaderboard
 {
     public class LeaderboardEntry
     {

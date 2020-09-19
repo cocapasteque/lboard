@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using LBoard.Models;
+using LBoard.Models.Config;
+using LBoard.Services.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -19,11 +21,14 @@ namespace LBoard.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private ILogger _logger;
+        private readonly IJwtTokenProvider<IdentityUser> _tokenProvider;
+        private readonly ILogger _logger;
 
-        public AuthController(UserManager<IdentityUser> userManager, ILogger<AuthController> logger)
+        public AuthController(UserManager<IdentityUser> userManager, IJwtTokenProvider<IdentityUser> tokenProvider,
+            ILogger<AuthController> logger)
         {
             _userManager = userManager;
+            _tokenProvider = tokenProvider;
             _logger = logger;
         }
 
@@ -49,7 +54,7 @@ namespace LBoard.Controllers
 
                 _logger.LogError($"Registration failed for {request.Username} : " +
                                  $"{string.Join(',', result.Errors.Select(x => x.Description))}");
-                
+
                 return new BadRequestObjectResult(new {Message = "User Registration Failed", Errors = dictionary});
             }
 
@@ -64,14 +69,14 @@ namespace LBoard.Controllers
             IdentityUser identityUser;
 
             _logger.LogInformation($"Login request from {request.Username}");
-            
+
             if (!ModelState.IsValid || request == null || (identityUser = await ValidateUser(request)) == null)
             {
                 _logger.LogError($"Login failed for {request.Username}");
                 return new BadRequestObjectResult(new {Message = "Login failed"});
             }
 
-            var newToken = GenerateToken(identityUser);
+            var newToken = _tokenProvider.GenerateToken(identityUser);
 
             _logger.LogInformation($"Login successful for {request.Username}");
             return Ok(new {Token = newToken, Message = "Success"});
@@ -85,29 +90,6 @@ namespace LBoard.Controllers
             var result = _userManager.PasswordHasher.VerifyHashedPassword(identityUser, identityUser.PasswordHash,
                 credentials.Password);
             return result == PasswordVerificationResult.Failed ? null : identityUser;
-        }
-
-        private object GenerateToken(IdentityUser user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email),
-                }),
-                Expires = DateTime.UtcNow.AddSeconds(double.Parse(ApiConfig.JwtExp)), //TODO: Try parse
-                SigningCredentials =
-                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Audience = ApiConfig.JwtAudience,
-                Issuer = ApiConfig.JwtIssuer
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            
-            return tokenHandler.WriteToken(token);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LBoard.Models;
+using LBoard.Models.Leaderboard;
 using LBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -2,7 +2,10 @@
 using System.Text;
 using LBoard.Context;
 using LBoard.Models;
+using LBoard.Models.Config;
 using LBoard.Services;
+using LBoard.Services.Security;
+using LBoard.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,13 +15,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Utils;
 
 namespace LBoard
 {
     public class Startup
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public Startup(ILoggerFactory logFactory)
         {
@@ -43,28 +45,31 @@ namespace LBoard
                     $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
                     x => x.MigrationsAssembly("LBoard"));
             });
+
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LboardDbContext>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = false;
-                x.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey)),
-                    ValidateIssuer = true,
-                    ValidIssuer = ApiConfig.JwtIssuer,
-                    ValidateAudience = true,
-                    ValidAudience = ApiConfig.JwtAudience
-                };
-            });
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = false;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey)),
+                        ValidateIssuer = true,
+                        ValidIssuer = ApiConfig.JwtIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = ApiConfig.JwtAudience
+                    };
+                }).AddApiKeySupport(options => { });
 
             services.AddSingleton<ILeaderboardService, RedisService>();
+            services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
             services.AddControllers();
         }
 

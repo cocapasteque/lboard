@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LBoard.Models
+namespace LBoard.Models.Config
 {
     public static class DbConfig
     {

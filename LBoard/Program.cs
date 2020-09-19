@@ -1,8 +1,8 @@
 ﻿using System;
+using LBoard.Utils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using Utils;
 
 namespace LBoard
 {

@@ -1,10 +1,10 @@
-﻿﻿using System;
+﻿using System;
 using System.Drawing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Pastel;
 
-namespace Utils
+namespace LBoard.Utils
 {
     public static class ApplicationLogging
     {
