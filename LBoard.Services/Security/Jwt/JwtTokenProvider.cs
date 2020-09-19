@@ -6,7 +6,7 @@ using LBoard.Models.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LBoard.Services.Security
+namespace LBoard.Services.Security.Jwt
 {
     public class JwtTokenProvider : IJwtTokenProvider<IdentityUser>
     {
@@ -19,6 +19,7 @@ namespace LBoard.Services.Security
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id), 
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
                 }),

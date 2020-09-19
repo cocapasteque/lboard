@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using LBoard.Models;
-using LBoard.Models.Config;
-using LBoard.Services.Security;
+using LBoard.Services.Security.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LBoard.Controllers
 {

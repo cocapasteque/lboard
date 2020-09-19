@@ -1,4 +1,4 @@
-﻿namespace LBoard.Services.Security
+﻿namespace LBoard.Services.Security.Jwt
 {
     public interface IJwtTokenProvider<in TUser>
     {

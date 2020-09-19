@@ -1,16 +1,14 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using LBoard.Context;
-using LBoard.Models;
 using LBoard.Models.Config;
 using LBoard.Services;
-using LBoard.Services.Security;
+using LBoard.Services.Interfaces;
+using LBoard.Services.Security.Jwt;
 using LBoard.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,8 +26,6 @@ namespace LBoard
             _logger = logFactory.CreateLogger<Startup>();
         }
 
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -66,10 +62,18 @@ namespace LBoard
                         ValidateAudience = true,
                         ValidAudience = ApiConfig.JwtAudience
                     };
-                }).AddApiKeySupport(options => { });
+                });
 
-            services.AddSingleton<ILeaderboardService, RedisService>();
+
+            services.AddAuthorization();
+
+            services.AddHttpContextAccessor();
+            
+            services.AddSingleton<IEntriesService, RedisService>();
+            services.AddSingleton<ILeaderboardsService, LeaderboardsService>();
+            
             services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
+
             services.AddControllers();
         }
 

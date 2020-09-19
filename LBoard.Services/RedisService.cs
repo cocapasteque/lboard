@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using LBoard.Models;
 using LBoard.Models.Config;
 using LBoard.Models.Leaderboard;
+using LBoard.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
 namespace LBoard.Services
 {
-    public class RedisService : ILeaderboardService
+    public class RedisService : IEntriesService
     {
         private readonly ConnectionMultiplexer _redis;
         private IDatabase _db => _redis.GetDatabase(RedisConfig.Database);
@@ -26,7 +27,7 @@ namespace LBoard.Services
             _logger.LogInformation($"Connected to Redis.");
         }
 
-        public async Task<bool> AddToLeaderboardAsync(string board, LeaderboardEntry entry, double score)
+        public async Task<bool> AddEntryToLeaderboardAsync(string board, LeaderboardEntry entry, double score)
         {
             if (await RemoveAsync(board, entry))
             {
@@ -43,7 +44,7 @@ namespace LBoard.Services
             return await db.SortedSetAddAsync(board, JsonConvert.SerializeObject(entry), score);
         }
 
-        public async Task<IEnumerable<LeaderboardEntry>> GetLeaderboardAsync(string board, int? max = null)
+        public async Task<IEnumerable<LeaderboardEntry>> GetEntriesAsync(string board, int? max = null)
         {
             _logger.LogInformation($"Asked for leaderboard {board}.");
             var db = _db;
@@ -59,11 +60,11 @@ namespace LBoard.Services
             return await db.SortedSetRemoveAsync(board, JsonConvert.SerializeObject(entry));
         }
 
-        public async Task RemoveFromLeaderboardAsync(string board, string key)
+        public async Task RemoveEntriesFromLeaderboardAsync(string board, string key)
         {
             _logger.LogInformation($"Removing all entries for {key} in {board}");
             var db = _db;
-            var entries = await GetLeaderboardAsync(board);
+            var entries = await GetEntriesAsync(board);
             var toDelete = entries.Where(x => x.Key == key).Select(JsonConvert.SerializeObject);
             _logger.LogInformation($"Found {toDelete.Count()} entries to delete");
 

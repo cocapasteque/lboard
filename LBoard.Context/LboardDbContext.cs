@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using LBoard.Models.Leaderboard;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LBoard.Context
@@ -8,9 +9,10 @@ namespace LBoard.Context
         public LboardDbContext(DbContextOptions options)
             : base(options)
         {
-            
         }
 
+        public DbSet<Leaderboard> Leaderboards { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

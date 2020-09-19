@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\LBoard.Context\LBoard.Context.csproj" />
       <ProjectReference Include="..\LBoard.Models\LBoard.Models.csproj" />
     </ItemGroup>
 
