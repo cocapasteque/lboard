@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using LBoard.Models.Leaderboard;
 using LBoard.Services;
+using LBoard.Services.Extensions;
 using LBoard.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,16 @@ namespace LBoard.Controllers
         [HttpGet("{board}")]
         public async Task<IActionResult> GetLeaderboard(string board)
         {
-            var entries = await _redis.GetEntriesAsync(board);
+            var boardId = $"{HttpContext.GetUserId()}_{board}";
+            var entries = await _redis.GetEntriesAsync(boardId);
             return Ok(entries);
         }
         
         [HttpPost("{board}")]
         public async Task<IActionResult> PostEntry([FromBody] LeaderboardPostRequest req, string board)
         {
-            var ok = await _redis.AddEntryToLeaderboardAsync(board, req.Entry, req.Score);
+            var boardId = $"{HttpContext.GetUserId()}_{board}";
+            var ok = await _redis.AddEntryToLeaderboardAsync(boardId, req.Entry, req.Score);
             if (ok) return Ok(req);
             return StatusCode(500);
         }
@@ -37,7 +40,8 @@ namespace LBoard.Controllers
         [HttpDelete("{board}/{key}")]
         public async Task<IActionResult> RemoveEntry(string key, string board)
         {
-            await _redis.RemoveEntriesFromLeaderboardAsync(board, key);
+            var boardId = $"{HttpContext.GetUserId()}_{board}";
+            await _redis.RemoveEntriesFromLeaderboardAsync(boardId, key);
             return StatusCode(200);
         }
     }

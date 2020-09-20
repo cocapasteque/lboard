@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LBoard.Migrations
 {
     [DbContext(typeof(LboardDbContext))]
-    [Migration("20200919193932_LeaderboardTable")]
-    partial class LeaderboardTable
+    [Migration("20200920083432_InitCreate")]
+    partial class InitCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,6 +22,7 @@ namespace LBoard.Migrations
             modelBuilder.Entity("LBoard.Models.Leaderboard.Leaderboard", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Description")

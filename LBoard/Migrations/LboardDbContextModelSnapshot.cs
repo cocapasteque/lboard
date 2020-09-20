@@ -20,6 +20,7 @@ namespace LBoard.Migrations
             modelBuilder.Entity("LBoard.Models.Leaderboard.Leaderboard", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Description")

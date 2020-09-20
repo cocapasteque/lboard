@@ -28,6 +28,27 @@ namespace LBoard.Controllers
             return Ok(boards);
         }
 
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetLeaderboard(string key)
+        {
+            var board = await _leaderboards.GetLeaderboardAsync(x => x.Key.Equals(key));
+            return Ok(board);
+        }
+
+        [HttpDelete("{key}")]
+        public async Task<IActionResult> RemoveLeaderboard(string key)
+        {
+            var board = await _leaderboards.RemoveLeaderboardAsync(x => x.Key.Equals(key));
+            return Ok($"{(board ? "Success" : "Failure")}");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateLeaderboard([FromBody] Leaderboard leaderboard)
+        {
+            var board = await _leaderboards.UpdateLeaderboardAsync(leaderboard);
+            return Ok(board);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> AddLeaderboard([FromBody] Leaderboard leaderboard)
         {

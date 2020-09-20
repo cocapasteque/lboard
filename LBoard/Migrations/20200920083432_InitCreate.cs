@@ -69,6 +69,27 @@ namespace LBoard.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Leaderboards",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Key = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    OwnerId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Leaderboards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Leaderboards_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 columns: table => new
                 {
@@ -154,6 +175,11 @@ namespace LBoard.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Leaderboards_OwnerId",
+                table: "Leaderboards",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
                 column: "RoleId");
@@ -193,6 +219,9 @@ namespace LBoard.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Leaderboards");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims");
 

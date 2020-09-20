@@ -38,7 +38,7 @@ namespace LBoard
             services.AddDbContext<LboardDbContext>(options =>
             {
                 options.UseMySql(
-                    $"Server=db;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
+                    $"Server={DbConfig.MySqlServer};Port=3307;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
                     x => x.MigrationsAssembly("LBoard"));
             });
 
@@ -57,24 +57,21 @@ namespace LBoard
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ApiConfig.JwtSecretKey)),
-                        ValidateIssuer = true,
+                        ValidateIssuer = false,
                         ValidIssuer = ApiConfig.JwtIssuer,
-                        ValidateAudience = true,
+                        ValidateAudience = false,
                         ValidAudience = ApiConfig.JwtAudience
                     };
                 });
 
 
             services.AddAuthorization();
-
-            services.AddHttpContextAccessor();
-            
-            services.AddSingleton<IEntriesService, RedisService>();
-            services.AddSingleton<ILeaderboardsService, LeaderboardsService>();
-            
-            services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
-
             services.AddControllers();
+            
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
+            services.AddSingleton<IEntriesService, RedisService>();
+            services.AddScoped<ILeaderboardsService, LeaderboardsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
