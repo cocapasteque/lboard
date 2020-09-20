@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.AspNetCore.StaticFiles.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -67,11 +69,14 @@ namespace LBoard
 
             services.AddAuthorization();
             services.AddControllers();
-            
+
             services.AddHttpContextAccessor();
             services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
             services.AddSingleton<IEntriesService, RedisService>();
             services.AddScoped<ILeaderboardsService, LeaderboardsService>();
+
+            // Angular files to be served in production
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "Client/dist"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +94,15 @@ namespace LBoard
                 app.UseHttpsRedirection();
             }
 
+            app.UseStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles(new StaticFileOptions()
+                {
+                    ServeUnknownFileTypes = true
+                });
+            }
+
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -99,6 +113,17 @@ namespace LBoard
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             scope.ServiceProvider.GetService<LboardDbContext>().Database.Migrate();
             _logger.LogInformation("Migration done.");
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "Client";
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions {ServeUnknownFileTypes = true};
+                
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer("start");
+                }
+            });
         }
     }
 }

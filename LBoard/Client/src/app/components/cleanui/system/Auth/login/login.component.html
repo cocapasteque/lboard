@@ -1,0 +1,46 @@
+﻿<div>
+  <div class="text-center mb-5">
+    <h1 class="mb-5 px-3">
+      <strong>Welcome to {{logo}}</strong>
+    </h1>
+    <p class="mb-4">
+      Lightweigth, fully-featured ranking system.
+      <br />
+      Fast leaderboards and ranking with customizable data using in-memory database.
+      <br />
+    </p>
+  </div>
+  <div class="card boxContainer">
+    <div class="text-dark font-size-24 mb-3">
+      <strong>Sign in to your account</strong>
+    </div>
+    <form nz-form [nzLayout]="'vertical'" [formGroup]="form" (ngSubmit)="submitForm()" role="form">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your email!">
+          <input type="text" nz-input formControlName="email" nzSize="large" placeholder="Email Address" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Password!">
+          <input type="password" nz-input nzSize="large" formControlName="password" placeholder="Password" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzSize]="'large'" [nzLoading]="loading" class="text-center w-100">
+            <strong>Log In</strong>
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <a routerLink="/auth/forgot-password" class="kit__utils__link font-size-16">
+      Forgot password?
+    </a>
+  </div>
+  <div class="text-center pt-2 mb-auto">
+    <span class="mr-2">Don't have an account?</span>
+    <a routerLink="/auth/register" class="kit__utils__link font-size-16">
+      Sign up
+    </a>
+  </div>
+</div>
