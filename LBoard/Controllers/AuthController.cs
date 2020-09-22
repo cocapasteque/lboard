@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using LBoard.Models;
+using LBoard.Services.Extensions;
 using LBoard.Services.Security.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +76,22 @@ namespace LBoard.Controllers
             return Ok(new {Token = newToken, Message = "Success"});
         }
 
+        [HttpGet]
+        [Route("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new {Message = "Success"});
+        }
+        
+        [HttpGet]
+        [Route("account")]
+        public async Task<IActionResult> Account()
+        {
+            var user = await _userManager.FindByIdAsync(HttpContext.GetUserId());
+            _logger.LogInformation($"Getting account information for {user.UserName}");
+            return Ok(user);
+        }
+        
         private async Task<IdentityUser> ValidateUser(Auth.LoginRequest credentials)
         {
             var identityUser = await _userManager.FindByNameAsync(credentials.Username);

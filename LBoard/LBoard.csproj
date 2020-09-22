@@ -37,4 +37,23 @@
       <Content Include="Client\src\.DS_Store" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\gallery\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\github-explore\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\helpdesk-dashboard\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\jira-agile-board\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\mail\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\messaging\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\dashboard\alpha\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\dashboard\beta\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\dashboard\crypto\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\dashboard\gamma\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\icons\feather-icons\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\icons\fontawesome\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\icons\icomoon-free\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\icons\linearicons-free\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\ui-kits\antd\data.json" />
+      <_ContentIncludedByDefault Remove="Client\src\app\pages\ui-kits\bootstrap\data.json" />
+    </ItemGroup>
+
 </Project>

@@ -10,14 +10,12 @@ import { NzNotificationService } from 'ng-zorro-antd'
 import * as Reducers from 'src/app/store/reducers'
 import * as UserActions from './actions'
 import { jwtAuthService } from 'src/app/services/jwt'
-import { firebaseAuthService } from 'src/app/services/firebase'
 
 @Injectable()
 export class UserEffects implements OnInitEffects {
   constructor(
     private actions: Actions,
     private jwtAuthService: jwtAuthService,
-    private firebaseAuthService: firebaseAuthService,
     private router: Router,
     private rxStore: Store<any>,
     private notification: NzNotificationService,
@@ -37,24 +35,25 @@ export class UserEffects implements OnInitEffects {
     switchMap(([payload, settings]) => {
       // jwt login
       if (settings.authProvider === 'jwt') {
-        return this.jwtAuthService.login(payload.email, payload.password).pipe(
+        return this.jwtAuthService.login(payload.username, payload.password).pipe(
           map(response => {
-            if (response && response.accessToken) {
-              store.set('accessToken', response.accessToken);
-              this.notification.success('Logged In', 'You have successfully logged in!');
-              return new UserActions.LoadCurrentAccount();
+            if (response && response.token) {
+              store.set('accessToken', response.token)
+              this.notification.success('Logged In', 'You have successfully logged in!')
+              return new UserActions.LoadCurrentAccount()
             }
-            this.notification.warning('Auth Failed', response);
-            return new UserActions.LoginUnsuccessful();
+            this.notification.warning('Auth Failed', response)
+            return new UserActions.LoginUnsuccessful()
           }),
           catchError(error => {
-            console.log('LOGIN ERROR: ', error);
-            return from([{ type: UserActions.LOGIN_UNSUCCESSFUL }]);
+            console.log('LOGIN ERROR: ', error)
+            this.notification.warning('Auth Failed', error.message)
+            return from([{ type: UserActions.LOGIN_UNSUCCESSFUL }])
           }),
         )
       }
     }),
-  );
+  )
 
   @Effect()
   register: Observable<any> = this.actions.pipe(
@@ -84,19 +83,6 @@ export class UserEffects implements OnInitEffects {
           }),
         )
       }
-
-      // firebase register
-      return from(
-        this.firebaseAuthService.register(payload.email, payload.password, payload.name),
-      ).pipe(
-        map(() => {
-          return new UserActions.EmptyAction()
-        }),
-        catchError(error => {
-          this.notification.warning(error.code, error.message)
-          return from([{ type: UserActions.EMPTY_ACTION }])
-        }),
-      )
     }),
   )
 
@@ -113,7 +99,7 @@ export class UserEffects implements OnInitEffects {
         return this.jwtAuthService.currentAccount().pipe(
           map(response => {
             if (response && (response.email || response.user)) {
-              this.router.navigate(['/'])
+              this.router.navigate([''])
               return new UserActions.LoadCurrentAccountSuccessful(response)
             }
             return new UserActions.LoadCurrentAccountUnsuccessful()
@@ -148,15 +134,6 @@ export class UserEffects implements OnInitEffects {
           }),
         )
       }
-
-      // firebase logout
-      return from(this.firebaseAuthService.logout()).pipe(
-        map(() => {
-          store.remove('accessToken')
-          this.router.navigate(['/auth/login'])
-          return new UserActions.FlushUser()
-        }),
-      )
     }),
   )
 }

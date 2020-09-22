@@ -2,7 +2,7 @@
 
 export const initialState: object = {
   id: '',
-  name: '',
+  userName: '',
   role: '',
   email: '',
   avatar: '',
@@ -39,7 +39,7 @@ export function reducer(state = initialState, action: UserActions.Actions): obje
     case UserActions.FLUSH_USER:
       return {
         id: '',
-        name: '',
+        userName: '',
         role: '',
         email: '',
         avatar: '',

@@ -13,7 +13,7 @@ const STORED_SETTINGS = (storedSettings: object) => {
 export const initialState: object = {
   // default settings, if not exist in localStorage
   ...STORED_SETTINGS({
-    authProvider: 'firebase', // firebase, jwt
+    authProvider: 'jwt', // firebase, jwt
     logo: 'LBoard',
     locale: 'en-US',
     isSidebarOpen: false,

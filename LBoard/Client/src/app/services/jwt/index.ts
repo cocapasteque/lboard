@@ -7,12 +7,12 @@ import store from 'store'
 export class jwtAuthService {
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post('/api/auth/login', { email, password })
+  login(username: string, password: string): Observable<any> {
+    return this.http.post('/api/auth/login', { username, password })
   }
 
-  register(email: string, password: string, name: string): Observable<any> {
-    return this.http.post('/api/auth/register', { email, password, name })
+  register(email: string, password: string, username: string): Observable<any> {
+    return this.http.post('/api/auth/register', { email, password, username })
   }
 
   currentAccount(): Observable<any> {

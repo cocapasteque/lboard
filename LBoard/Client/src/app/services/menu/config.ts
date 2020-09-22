@@ -7,22 +7,22 @@
     title: 'All',
     key: 'leaderboards',
     icon: 'fe fe-grid',
-    url: '/leaderboards'
+    url: '/leaderboards/all',
   },
   {
     title: 'Create New',
     key: 'create-new',
     icon: 'fe fe-plus',
-    url: '/leaderboards/new'
+    url: '/leaderboards/new',
   },
   {
     category: true,
-    title: 'Stats'
+    title: 'Stats',
   },
   {
     title: 'Dashboard',
     key: 'dashboard',
     icon: 'fe fe-pie-chart',
-    url: '/stats'
-  }
-];
+    url: '/stats',
+  },
+]

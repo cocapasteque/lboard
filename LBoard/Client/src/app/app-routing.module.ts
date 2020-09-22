@@ -13,7 +13,12 @@ import { LayoutMainComponent } from 'src/app/layouts/Main/main.component'
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'leaderboards',
+    redirectTo: 'leaderboards/all',
+    pathMatch: 'full',
+  },
+  {
+    path: 'leaderboards',
+    redirectTo: 'leaderboards/all',
     pathMatch: 'full',
   },
   {
@@ -24,8 +29,8 @@ const routes: Routes = [
         path: 'leaderboards',
         canActivate: [AuthGuard],
         loadChildren: () =>
-          import('src/app/pages/dashboard/dashboard.module').then(m => m.DashboardModule),
-      }
+          import('src/app/pages/leaderboards/leaderboards.module').then(m => m.LeaderboardsModule),
+      },
     ],
   },
   {
@@ -42,7 +47,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: '/auth/404',
   },
-];
+]
 
 @NgModule({
   imports: [

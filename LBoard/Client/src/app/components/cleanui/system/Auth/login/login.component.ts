@@ -11,44 +11,44 @@ import * as SettingsActions from 'src/app/store/settings/actions'
   styleUrls: ['../style.component.scss'],
 })
 export class LoginComponent {
-  form: FormGroup;
-  logo: String;
-  authProvider: string = 'jwt';
-  loading: boolean = false;
+  form: FormGroup
+  logo: String
+  authProvider: string = 'jwt'
+  loading: boolean = false
 
   constructor(private fb: FormBuilder, private store: Store<any>) {
     this.form = fb.group({
-      email: ['', [Validators.required, Validators.minLength(4)]],
+      username: ['', [Validators.required]],
       password: ['', [Validators.required]],
-    });
+    })
     this.store.pipe(select(Reducers.getSettings)).subscribe(state => {
-      this.logo = state.logo;
-      this.authProvider = state.authProvider;
-    });
+      this.logo = state.logo
+      this.authProvider = state.authProvider
+    })
     this.store.pipe(select(Reducers.getUser)).subscribe(state => {
       this.loading = state.loading
     })
   }
 
-  get email() {
-    return this.form.controls.email
+  get username() {
+    return this.form.controls.username
   }
   get password() {
     return this.form.controls.password
   }
 
   submitForm(): void {
-    this.email.markAsDirty();
-    this.email.updateValueAndValidity();
-    this.password.markAsDirty();
-    this.password.updateValueAndValidity();
-    if (this.email.invalid || this.password.invalid) {
+    this.username.markAsDirty()
+    this.username.updateValueAndValidity()
+    this.password.markAsDirty()
+    this.password.updateValueAndValidity()
+    if (this.username.invalid || this.password.invalid) {
       return
     }
     const payload = {
-      email: this.email.value,
+      username: this.username.value,
       password: this.password.value,
-    };
-    this.store.dispatch(new UserActions.Login(payload));
+    }
+    this.store.dispatch(new UserActions.Login(payload))
   }
 }
