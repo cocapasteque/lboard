@@ -1,29 +1,29 @@
 version: "3"
 
 services:
-  # lboard:
-  #   container_name: lboard
-  #   image: lboard:latest
-  #   depends_on:
-  #     - "redis_image"
-  #     - "db"
-  #   ports:
-  #     - "8001:80"
-  #   environment:
-  #     REDIS_ADDRESS: ${REDIS_ADDRESS}
-  #     REDIS_PORT: ${REDIS_PORT}
-  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
-  #     REDIS_BKEY: "lboard"
-  #     REDIS_DB: 0
-  #     MYSWL_SERVER: ${MYSQL_SERVER}
-  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
-  #     MYSQL_USER: ${MYSQL_USER}
-  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  #     TRACE_OUTPUT: ${TRACE_OUTPUT}
-  #     JWT_SECRET: ${JWT_SECRET}
-  #     JWT_ISSUER: ${JWT_ISSUER}
-  #     JWT_AUDIENCE: ${JWT_AUDIENCE}
-  #     JWT_EXPIRY: ${JWT_EXPIRY}
+  lboard:
+    container_name: lboard
+    image: lboard:latest
+    depends_on:
+      - "redis_image"
+      - "db"
+    ports:
+      - "8001:80"
+    environment:
+      REDIS_ADDRESS: ${REDIS_ADDRESS}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_BKEY: "lboard"
+      REDIS_DB: 0
+      MYSQL_SERVER: ${MYSQL_SERVER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TRACE_OUTPUT: ${TRACE_OUTPUT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRY: ${JWT_EXPIRY}
   
   redis_image:
     container_name: redis_cache

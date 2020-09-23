@@ -3,14 +3,16 @@ using System;
 using LBoard.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LBoard.Migrations
 {
     [DbContext(typeof(LboardDbContext))]
-    partial class LboardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200923203313_InitCreate")]
+    partial class InitCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

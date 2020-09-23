@@ -31,13 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Client\.cloudflare\.gitignore" />
-      <Content Include="Client\.cloudflare\wrangler.toml" />
-      <Content Include="Client\.DS_Store" />
-      <Content Include="Client\src\.DS_Store" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\gallery\data.json" />
       <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\github-explore\data.json" />
       <_ContentIncludedByDefault Remove="Client\src\app\pages\apps\helpdesk-dashboard\data.json" />

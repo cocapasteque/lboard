@@ -1,0 +1,31 @@
+﻿{
+  "extends": "../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      [
+        "app",
+        "cui",
+        "layout",
+        "air",
+        "kit",
+        "lboard"
+      ],
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      [
+        "app",
+        "cui",
+        "layout",
+        "air",
+        "kit",
+        "lboard"
+      ],
+      "kebab-case"
+    ]
+  }
+}

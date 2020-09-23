@@ -40,7 +40,7 @@ namespace LBoard
             services.AddDbContext<LboardDbContext>(options =>
             {
                 options.UseMySql(
-                    $"Server={DbConfig.MySqlServer};Port=3307;Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
+                    $"Server={DbConfig.MySqlServer};Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
                     x => x.MigrationsAssembly("LBoard"));
             });
 
@@ -74,9 +74,7 @@ namespace LBoard
             services.AddSingleton<IJwtTokenProvider<IdentityUser>, JwtTokenProvider>();
             services.AddSingleton<IEntriesService, RedisService>();
             services.AddScoped<ILeaderboardsService, LeaderboardsService>();
-
-            // Angular files to be served in production
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "Client/dist"; });
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,15 +92,6 @@ namespace LBoard
                 app.UseHttpsRedirection();
             }
 
-            app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles(new StaticFileOptions()
-                {
-                    ServeUnknownFileTypes = true
-                });
-            }
-
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -113,17 +102,6 @@ namespace LBoard
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             scope.ServiceProvider.GetService<LboardDbContext>().Database.Migrate();
             _logger.LogInformation("Migration done.");
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "Client";
-                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions {ServeUnknownFileTypes = true};
-                
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer("start");
-                }
-            });
         }
     }
 }

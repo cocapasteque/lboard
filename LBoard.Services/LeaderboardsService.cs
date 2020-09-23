@@ -99,12 +99,7 @@ namespace LBoard.Services
         {
             return Task.Run(async () =>
             {
-                var userId = _http.HttpContext.GetUserId();
-                var entry = await _context.Leaderboards.FirstOrDefaultAsync(
-                    x => x.OwnerId.Equals(userId) && x.Id.Equals(leaderboard.Id));
-                if (entry == null) return false;
-
-                var result = _context.Leaderboards.Remove(entry);
+                var result = _context.Leaderboards.Remove(leaderboard);
                 await _context.SaveChangesAsync();
 
                 return result != null;

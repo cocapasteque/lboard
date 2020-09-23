@@ -12,6 +12,7 @@ namespace LBoard.Context
         }
 
         public DbSet<Leaderboard> Leaderboards { get; set; }
+        public DbSet<Category> Categories { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {

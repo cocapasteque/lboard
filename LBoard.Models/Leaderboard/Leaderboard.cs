@@ -17,9 +17,11 @@ namespace LBoard.Models.Leaderboard
         [JsonIgnore]
         public IdentityUser Owner { get; set; }
 
+        public Category Category { get; set; }
+        
         public override string ToString()
         {
-            return $"[Key={Key}, Name={Name}, Description={Description}, Owner={Owner}]";
+            return $"[Key={Key}, Name={Name}, Description={Description}, Category={Category?.Name}, Owner={Owner}]";
         }
     }
 }

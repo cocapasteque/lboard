@@ -1,0 +1,27 @@
+<div>
+  <div class="kit__utils__heading">
+    <h5>Add a new leaderboard category</h5>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="mb-4">
+        <strong>New Category</strong>
+      </h5>
+      <form nz-form [formGroup]="categoryForm" (ngSubmit)="validate()">
+        <nz-form-item>
+          <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="name" class="text-left">Category Name</nz-form-label>
+          <nz-form-control [nzSm]="12" [nzXs]="24" nzErrorTip="Please input a category name">
+            <input nz-input id="name" formControlName="name" placeholder="Category name..." />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button type="submit" class="btn btn-success px-5">
+              Create Category
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</div>
