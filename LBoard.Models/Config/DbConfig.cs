@@ -8,5 +8,6 @@ namespace LBoard.Models.Config
         public static string MySqlDatabase => Environment.GetEnvironmentVariable("MYSQL_DATABASE") ?? "lboard";
         public static string MySqlUser => Environment.GetEnvironmentVariable("MYSQL_USER") ?? "admin";
         public static string MySqlPassword => Environment.GetEnvironmentVariable("MYSQL_PASSWORD") ?? "admin";
+        public static string MySqlPort => Environment.GetEnvironmentVariable("MYSQL_PORT") ?? "3307";
     }
 }

@@ -40,7 +40,7 @@ namespace LBoard
             services.AddDbContext<LboardDbContext>(options =>
             {
                 options.UseMySql(
-                    $"Server={DbConfig.MySqlServer};Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword}",
+                    $"Server={DbConfig.MySqlServer};Port={DbConfig.MySqlPort};Database={DbConfig.MySqlDatabase};Uid={DbConfig.MySqlUser};Pwd={DbConfig.MySqlPassword};",
                     x => x.MigrationsAssembly("LBoard"));
             });
 

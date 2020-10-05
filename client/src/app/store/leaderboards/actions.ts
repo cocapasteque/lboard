@@ -6,6 +6,9 @@ export const LOAD_ALL_UNSUCCESSFUL = '[Leaderboards] Load All Unsuccessful'
 export const CREATE_CATEGORY = '[Category] Create New Category'
 export const CREATE_CATEGORY_SUCCESSFUL = '[Category] Created Category'
 export const CREATE_CATEGORY_UNSUCCESSFUL = '[Category] Created Category Fail'
+export const LOAD_ALL_CATEGORIES = '[Category] Load All'
+export const LOAD_ALL_CATEGORIES_SUCCESSFUL = '[Category] Load All Successful'
+export const LOAD_ALL_CATEGORIES_UNSUCCESSFUL = '[Category] Load All Unsuccessful'
 
 export class LoadAll implements Action {
   readonly type = LOAD_ALL
@@ -49,6 +52,28 @@ export class CreateCategoryUnsuccessful implements Action {
   }
 }
 
+export class LoadAllCategories implements Action {
+  readonly type = LOAD_ALL_CATEGORIES
+
+  constructor() {
+  }
+}
+
+export class LoadAllCategoriesSuccessful implements Action {
+  readonly type = LOAD_ALL_CATEGORIES_SUCCESSFUL
+
+  constructor(public payload: any) {
+  }
+}
+
+export class LoadAllCategoriesUnsuccessful implements Action {
+  readonly type = LOAD_ALL_CATEGORIES_UNSUCCESSFUL
+
+  constructor() {
+  }
+}
+
+
 export type Actions =
   LoadAll
   | LoadAllSuccessful
@@ -56,3 +81,6 @@ export type Actions =
   | CreateCategory
   | CreateCategorySuccessful
   | CreateCategoryUnsuccessful
+  | LoadAllCategories
+  | LoadAllCategoriesSuccessful
+  | LoadAllCategoriesUnsuccessful

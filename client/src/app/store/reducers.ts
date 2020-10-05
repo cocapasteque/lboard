@@ -16,6 +16,7 @@ export const reducers: ActionReducerMap<any> = {
   settings: fromSettings.reducer,
   user: fromUser.reducer,
   leaderboards: fromLboard.reducer,
+  categories: fromLboard.reducer
 }
 
 export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -42,4 +43,10 @@ export const getAllLeaderboardsState = createFeatureSelector<any>('leaderboards'
 export const getAllLeaderboards = createSelector(
   getAllLeaderboardsState,
   fromLboard.getLeaderboards,
+)
+
+export const getAllCategoriesState = createFeatureSelector<any>('categories')
+export const getAllCategories = createSelector(
+  getAllCategoriesState,
+  fromLboard.getCategories,
 )

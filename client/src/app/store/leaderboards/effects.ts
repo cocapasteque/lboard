@@ -9,6 +9,7 @@ import * as Reducers from 'src/app/store/reducers'
 import { from, Observable, of } from 'rxjs'
 import { catchError, concatMap, map, switchMap, withLatestFrom } from 'rxjs/operators'
 import { ApiService } from '../../services/api'
+import { LoadAllCategories } from './actions'
 
 @Injectable()
 export class LeaderboardEffects {
@@ -41,6 +42,29 @@ export class LeaderboardEffects {
     catchError(error => {
       this.notification.error('Cannot get leaderboards', error.message)
       return from([{ type: LeaderboardActions.LOAD_ALL_UNSUCCESSFUL }])
+    }),
+  )
+
+  @Effect()
+  loadAllCategories: Observable<any> = this.actions.pipe(
+    ofType(LeaderboardActions.LOAD_ALL_CATEGORIES),
+    map((action: LeaderboardActions.LoadAllCategories) => true),
+    concatMap(action =>
+      of(action).pipe(withLatestFrom(this.rxStore.pipe(select(Reducers.getSettings)))),
+    ),
+    switchMap(() => {
+      return this.api.getCategories().pipe(
+        map(response => {
+          if (response) {
+            return new LeaderboardActions.LoadAllCategoriesSuccessful(response)
+          }
+          return new LeaderboardActions.LoadAllCategoriesUnsuccessful()
+        }),
+      )
+    }),
+    catchError(error => {
+      this.notification.error('Cannot get categories', error.message)
+      return from([{ type: LeaderboardActions.LOAD_ALL_CATEGORIES_UNSUCCESSFUL }])
     }),
   )
 

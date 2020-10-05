@@ -17,6 +17,10 @@ export class ApiService {
     return this.http.post(environment.apiUrl + 'categories', category, this.getHeader())
   }
 
+  getCategories(): Observable<any> {
+    return this.http.get(environment.apiUrl + 'categories', this.getHeader())
+  }
+
   getHeader() {
     const accessToken = store.get('accessToken')
     return accessToken

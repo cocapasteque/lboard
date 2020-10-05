@@ -6,6 +6,7 @@ import { select, Store } from '@ngrx/store'
 import { MenuService } from 'src/app/services/menu'
 import * as SettingsActions from 'src/app/store/settings/actions'
 import * as Reducers from 'src/app/store/reducers'
+import * as LeaderboardActions from 'src/app/store/leaderboards/actions'
 
 @Component({
   selector: 'cui-menu-left',
@@ -29,7 +30,7 @@ export class MenuLeftComponent implements OnInit {
     this.store.pipe(select(Reducers.getUser)).subscribe(state => {
       this.role = state.role
     })
-    this.menuService.getMenuData().subscribe(menuData => (this.menuData = menuData))
+    // this.menuService.getMenuData().subscribe(menuData => (this.menuData = menuData))
     this.store.pipe(select(Reducers.getSettings)).subscribe(state => {
       this.menuColor = state.menuColor
       this.isMenuShadow = state.isMenuShadow
@@ -40,6 +41,13 @@ export class MenuLeftComponent implements OnInit {
       this.isMenuCollapsed = state.isMenuCollapsed
       this.logo = state.logo
     })
+
+    this.store.pipe(select(Reducers.getAllCategories)).subscribe(state => {
+      this.menuService.getMenuData(state.categories).subscribe(data => {
+        console.log(data)
+        this.menuData = data
+      })
+    })
   }
 
   ngOnInit() {
@@ -49,6 +57,7 @@ export class MenuLeftComponent implements OnInit {
       .subscribe((event: NavigationStart) => {
         this.activateMenu(event.url ? event.url : null)
       })
+    this.store.dispatch(new LeaderboardActions.LoadAllCategories())
   }
 
   activateMenu(url: any, menuData = this.menuData) {

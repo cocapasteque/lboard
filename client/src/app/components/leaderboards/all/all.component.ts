@@ -14,7 +14,7 @@ export class AllComponent implements OnInit {
 
   constructor(private store: Store<any>) {
     this.store.pipe(select(Reducers.getAllLeaderboards)).subscribe(state => {
-      this.leaderboards = state.all
+      this.leaderboards = state.leaderboards
       this.loading = state.loading
     })
   }
