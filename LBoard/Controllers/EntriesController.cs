@@ -10,7 +10,6 @@ namespace LBoard.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class EntriesController : ControllerBase
     {
         private readonly IEntriesService _redis;
